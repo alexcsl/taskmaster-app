@@ -1,26 +1,161 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 222 47% 8%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 11%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 263 70% 60%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 55%;
+    --accent: 263 70% 60%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 33% 18%;
+    --input: 217 33% 18%;
+    --ring: 263 70% 60%;
+    --radius: 0.75rem;
+
+    --glass-bg: rgba(15, 18, 30, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.06);
+    --glass-blur: 20px;
+    --accent-color: #8b5cf6;
+    --accent-rgb: 139, 92, 246;
   }
 }
 
+* {
+  border-color: hsl(var(--border));
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+/* Glassmorphism utilities */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 1rem;
+}
+
+.glass-sidebar {
+  background: rgba(10, 12, 20, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(var(--accent-rgb), 0.3);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--accent-rgb), 0.5);
+}
+
+/* Animated gradient background */
+.bg-gradient-mesh {
+  background-color: hsl(222, 47%, 8%);
+  background-image:
+    radial-gradient(at 40% 20%, hsla(263, 70%, 15%, 0.5) 0px, transparent 50%),
+    radial-gradient(at 80% 0%, hsla(220, 70%, 12%, 0.4) 0px, transparent 50%),
+    radial-gradient(at 0% 50%, hsla(260, 60%, 10%, 0.4) 0px, transparent 50%),
+    radial-gradient(at 80% 50%, hsla(240, 60%, 12%, 0.3) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, hsla(270, 50%, 10%, 0.4) 0px, transparent 50%);
+}
+
+/* Priority colors */
+.priority-high { color: #f87171; }
+.priority-medium { color: #fbbf24; }
+.priority-low { color: #4ade80; }
+.priority-bg-high { background: rgba(248, 113, 113, 0.15); }
+.priority-bg-medium { background: rgba(251, 191, 36, 0.15); }
+.priority-bg-low { background: rgba(74, 222, 128, 0.15); }
+
+/* Accent color variable applied via JS */
+.accent-text { color: var(--accent-color); }
+.accent-bg { background: var(--accent-color); }
+.accent-border { border-color: var(--accent-color); }
+
+/* FullCalendar dark theme overrides */
+.fc {
+  --fc-border-color: rgba(255, 255, 255, 0.06);
+  --fc-button-bg-color: rgba(255, 255, 255, 0.05);
+  --fc-button-border-color: rgba(255, 255, 255, 0.1);
+  --fc-button-hover-bg-color: rgba(255, 255, 255, 0.1);
+  --fc-button-active-bg-color: var(--accent-color);
+  --fc-button-text-color: #e2e8f0;
+  --fc-event-bg-color: var(--accent-color);
+  --fc-event-border-color: var(--accent-color);
+  --fc-today-bg-color: rgba(var(--accent-rgb), 0.1);
+  --fc-page-bg-color: transparent;
+  --fc-neutral-bg-color: rgba(255, 255, 255, 0.03);
+}
+.fc .fc-col-header-cell-cushion,
+.fc .fc-daygrid-day-number,
+.fc .fc-list-event-title a {
+  color: #e2e8f0;
+  text-decoration: none;
+}
+.fc .fc-toolbar-title {
+  color: #f1f5f9;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.fc .fc-button {
+  border-radius: 0.5rem !important;
+  font-size: 0.8rem !important;
+  padding: 0.35rem 0.75rem !important;
+}
+.fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+  background: var(--accent-color);
+  color: white;
+  border-radius: 50%;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* BlockNote dark theme */
+.bn-container {
+  background: transparent !important;
+  color: hsl(var(--foreground)) !important;
+}
+.bn-editor {
+  background: transparent !important;
+}
+
+/* Selection highlight */
+::selection {
+  background: rgba(var(--accent-rgb), 0.3);
 }
