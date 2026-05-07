@@ -10,7 +10,6 @@ import { useSettingsStore } from '@/stores/settings-store'
 import type { Json } from '@/lib/supabase/types'
 import {
   ChevronRight,
-  FileText,
   Plus,
   Loader2,
   Trash2,
@@ -29,7 +28,7 @@ export default function NotePage() {
   const router = useRouter()
   const id = params.id as string
   const { note, loading, updateNote } = useNote(id)
-  const { notes, createNote } = useNotes()
+  const { notes, createNote, deleteNote } = useNotes()
   const { editorMode } = useSettingsStore()
   const [localMode, setLocalMode] = useState<'block' | 'markdown'>(editorMode)
   const [title, setTitle] = useState('')
@@ -79,6 +78,11 @@ export default function NotePage() {
   async function handleCreateSubpage() {
     const newNote = await createNote({ parent_id: id })
     if (newNote) router.push(`/notes/${newNote.id}`)
+  }
+
+  async function handleDeleteSubpage(subId: string) {
+    await deleteNote(subId)
+    window.dispatchEvent(new Event('notesUpdated'))
   }
 
   if (loading) {
@@ -222,14 +226,22 @@ export default function NotePage() {
           <h3 className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-3">Sub-pages</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {subpages.map((sub) => (
-              <Link
-                key={sub.id}
-                href={`/notes/${sub.id}`}
-                className="flex items-center gap-2.5 p-3 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/15 transition-all"
-              >
-                <span>{sub.icon || '📄'}</span>
-                <span className="text-sm text-slate-300">{sub.title}</span>
-              </Link>
+              <div key={sub.id} className="flex items-center gap-2 group">
+                <Link
+                  href={`/notes/${sub.id}`}
+                  className="flex items-center gap-2.5 p-3 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/15 transition-all flex-1 min-w-0"
+                >
+                  <span>{sub.icon || '📄'}</span>
+                  <span className="text-sm text-slate-300 truncate">{sub.title}</span>
+                </Link>
+                <button
+                  onClick={() => handleDeleteSubpage(sub.id)}
+                  className="opacity-0 group-hover:opacity-100 p-2 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-all flex-shrink-0"
+                  title="Delete sub-page"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
             ))}
           </div>
         </div>
